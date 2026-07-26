@@ -30,7 +30,7 @@ from alembic import op
 import sqlalchemy as sa
 
 
-revision: str = "022_phase22b_marketplace_payment_fields"
+revision: str = "022_phase22b_marketplace_payments"
 down_revision: Union[str, None] = "021_razorpay_payments"
 branch_labels = None
 depends_on = None
