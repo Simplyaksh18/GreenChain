@@ -1,0 +1,88 @@
+## GreenChain backend — Render blueprint.
+##
+## Deploy: Render dashboard → New → Blueprint → point at this file.
+## After first deploy, set the environment variables listed in `envVars` below
+## (Render will prompt for the ones without a `value` field) from the
+## Environment tab. NEVER put real secrets in this file.
+##
+## Health check hits GET /health which is public and dependency-light.
+## Migrations run as part of the start script — if they fail, the deploy fails.
+
+services:
+  - type: web
+    name: greenchain-backend
+    env: python
+    plan: free                        # bump to `starter` for always-on
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: bash start.sh
+    healthCheckPath: /health
+    autoDeploy: false                 # flip on once you're happy
+    envVars:
+      - key: APP_ENV
+        # 'staging' or 'production' enables strict validation of SECRET_KEY
+        # and CORS_ORIGINS at startup — process refuses to boot if missing.
+        value: production
+      - key: PYTHON_VERSION
+        value: 3.11.9
+
+      # ── Secrets — set these in the Render dashboard, do not hardcode ──
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        # REQUIRED. 32+ char random secret. Set in Render dashboard.
+        # Generate: python -c "import secrets; print(secrets.token_urlsafe(64))"
+        # Backend refuses to start if missing, blank, too short, or a known default.
+        sync: false
+
+      - key: BLOCKCHAIN_MODE
+        value: web3
+      - key: WEB3_RPC_URL
+        sync: false
+      - key: WEB3_CONTRACT_ADDRESS
+        sync: false
+      - key: WEB3_CHAIN_ID
+        value: "80002"
+      - key: WEB3_ACCOUNT_ADDRESS
+        sync: false
+      - key: WEB3_PRIVATE_KEY
+        sync: false
+
+      - key: RAZORPAY_MODE
+        value: test
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: RAZORPAY_ACCOUNT_NUMBER
+        sync: false
+      - key: RAZORPAY_ENABLE_TEST_PAYOUTS
+        value: "false"
+      - key: RAZORPAY_WEBHOOK_SECRET
+        sync: false
+
+      - key: AI_MODE
+        value: rules
+      - key: GROQ_API_KEY
+        sync: false
+
+      - key: GOOGLE_AUTH_ENABLED
+        value: "false"
+
+      - key: UPLOAD_DIR
+        # Must live under the persistent-disk mount below (/var/data).
+        # Application appends /{farm_id}/{filename} under this directory.
+        value: /var/data/uploads/evidence
+      - key: PUBLIC_BASE_URL
+        sync: false
+      - key: CORS_ORIGINS
+        # REQUIRED in production. Comma-separated explicit origin list.
+        # Example: https://admin.greenchain.example,https://app.greenchain.example
+        # Wildcard '*' is rejected in staging/production.
+        sync: false
+
+    # Persistent disk so evidence uploads survive redeploys.
+    disk:
+      name: uploads
+      mountPath: /var/data
+      sizeGB: 1

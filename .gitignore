@@ -1,0 +1,80 @@
+# ─── GreenChain project-wide gitignore ────────────────────────────────────────
+# This file prevents secrets, build artifacts, and OS junk from ever being
+# committed. Add per-subproject rules in the subproject's own .gitignore.
+
+# Secrets / credentials — NEVER commit
+.env
+.env.*
+!.env.example
+!.env.test
+*.pem
+*.key
+*.jks
+*.keystore
+*.p8
+*.p12
+*.mobileprovision
+credentials.json
+credentials/
+gha-creds-*.json
+serviceAccount*.json
+*service-account*.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+.venv/
+venv/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# Local sqlite dev/test DBs
+*.sqlite
+*.sqlite3
+backend/test_greenchain.db
+backend/*.db-journal
+
+# Backend generated
+backend/openapi.json
+backend/uploads/
+
+# Node / Expo / RN
+node_modules/
+dist/
+build/
+web-build/
+.expo/
+.expo-shared/
+*.tsbuildinfo
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+.metro-health-check*
+
+# Generated native folders (Expo prebuild output)
+mobile/ios/
+mobile/android/
+
+# Hardhat / contracts
+contracts/cache/
+contracts/artifacts/
+contracts/typechain-types/
+contracts/coverage/
+contracts/coverage.json
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.orig
+
+# Local virtualenv folder in repo root (this project keeps one here)
+GreenChain/
