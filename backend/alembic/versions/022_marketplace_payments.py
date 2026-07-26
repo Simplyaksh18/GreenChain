@@ -30,7 +30,7 @@ from alembic import op
 import sqlalchemy as sa
 
 
-revision: str = "022_phase22b_marketplace_payments"
+revision: str = "022_marketplace_payments"
 down_revision: Union[str, None] = "021_razorpay_payments"
 branch_labels = None
 depends_on = None
@@ -40,7 +40,7 @@ def _has_column(connection, table: str, column: str) -> bool:
     """Dialect-agnostic column presence check (Postgres + SQLite)."""
     inspector = sa.inspect(connection)
     return column in {c["name"] for c in inspector.get_columns(table)}
-
+    
 
 def upgrade() -> None:
     conn = op.get_bind()
